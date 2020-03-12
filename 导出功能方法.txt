@@ -1,0 +1,125 @@
+Index.html页面中js方法调用	 
+	 //导出
+    function btn_export() {
+        var queryParams = {};
+        queryParams = $(".searchPanel").GetWebControls();
+
+        var param = JSON.stringify(queryParams);
+        location.href = "/PrefManager/Team/ExportExcel/?queryJson=" + param;
+    }
+ 
+ 
+ Controller.cs类中方法
+ [HttpGet]
+        public ActionResult ExportExcel(string queryJson)
+        {
+            string fileName = "绩效规则基础数据.xls";
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+
+            fileName = "绩效规则基础数据_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".xls";
+            ms = _teamBiz.ReportExcel(queryJson);
+            return File(ms.ToArray(), "application/ms-excel", fileName);
+        }
+
+
+
+
+Biz.cs类中方法
+/// <summary>
+        /// 查询需要导出的数据
+        /// </summary>
+        /// <param name="queryJson"></param>
+        /// <returns></returns>
+        public dynamic GetExcelData(string queryJson)
+        {
+            TeamQueryModel queryModel = Json.ToObject<TeamQueryModel>(queryJson);
+            StringBuilder sb = new StringBuilder();
+            sb.Append(@"
+SELECT
+a.TeamCode as '组编号',
+a.TeamName as '组名称',
+b.BUName as '事业部', 
+d.DepartmentName as '二级部门',
+a.Month as '月份',
+a.BaseJob as '基础工作量',
+a.BaseUnit as '工作量单位',
+a.Discount as '工作不达标折扣',
+a.UnitPrice as '单价',
+a.PieceType as '计件类型',
+a.BaseProfit as '毛利基数',
+a.TeamNum as '组员数'
+FROM [dbo].[HR_PF_Team] a 
+left join MDT_BU b on b.BUID=a.BUID and b.IsActive=1
+left join MDT_Department d on d.DepartmentID=a.DepartmentID and d.SourceParentId=b.SourceID and d.IsActive=1
+WHERE a.IsActive=1
+                    ");
+
+            StringBuilder sbWhere = new StringBuilder();
+            //事业部
+            if (!string.IsNullOrEmpty(queryModel.BUID))
+            {
+                sbWhere.AppendFormat("   and a.BUID = '{0}'", queryModel.BUID.Trim());
+            }
+            //二级部门
+            if (!string.IsNullOrEmpty(queryModel.DepartmentID))
+            {
+                sbWhere.AppendFormat("   and a.DepartmentID = '{0}'", queryModel.DepartmentID.Trim());
+            }
+            //月份
+            if (!string.IsNullOrEmpty(queryModel.Month))
+            {
+                sbWhere.AppendFormat("   and a.Month = '{0}'", queryModel.Month.Trim());
+            }
+            //组编码
+            if (!string.IsNullOrEmpty(queryModel.TeamCode))
+            {
+                sbWhere.AppendFormat("   and a.TeamCode like '%{0}%'", queryModel.TeamCode.Trim());
+            }
+            //组名称
+            if (!string.IsNullOrEmpty(queryModel.TeamName))
+            {
+                sbWhere.AppendFormat("   and a.TeamName like '%{0}%'", queryModel.TeamName.Trim());
+            }
+            sb.Append(sbWhere.ToString());
+            Framework.Db.DbHelper db = Framework.Db.DbFactory.CreateDbRead();
+            System.Data.DataSet ds = db.ExecuteDataSet(System.Data.CommandType.Text, sb.ToString());
+            if (ds.Tables.Count > 0)
+            {
+                return ds.Tables[0];
+            }
+            else
+            {
+                return new System.Data.DataTable();
+            }
+
+        }
+        /// <summary>
+        /// 导出报表
+        /// </summary>
+        /// <param name="queryJson"></param>
+        /// <returns></returns>
+        public MemoryStream ReportExcel(string queryJson)
+        {
+            System.Data.DataTable dt = GetExcelData(queryJson);
+            Workbook workbook = new Workbook();
+            Worksheet sheet = workbook.Worksheets[0];
+            Cells cells = sheet.Cells;
+            int coluIndex = 0;
+            int rowIndex = 0;
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+                cells[0, i].PutValue(dt.Columns[i]);
+                cells.SetColumnWidth(i, 20);
+            }
+            rowIndex++;
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                cells.SetRowHeight(rowIndex, 25);
+                for (int j = 0; j < dt.Columns.Count; j++)
+                {
+                    cells[rowIndex, j].PutValue(dt.Rows[i][j].ToString());
+                }
+                rowIndex++;
+            }
+            return workbook.SaveToStream();
+        }
