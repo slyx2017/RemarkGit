@@ -10,3 +10,14 @@ function FormatDate(now) {
 		date = "0" + date.toString();
 	return year + "-" + month + "-" + date;
 }
+//checkbox 是否选中
+var flag=$("#" + checkid + "").prop('checked')
+if(flag){
+	$("#" + checkid + "").attr("checked", "checked");
+	return "选中啦";
+}
+else
+{
+	$("#" + checkid + "").removeAttr("checked");
+	return "取消啦";
+}
