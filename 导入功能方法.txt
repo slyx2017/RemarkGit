@@ -1,0 +1,240 @@
+//Index.cshtml页面
+//批量导入
+    function btn_import() {
+        dialogOpen({
+            id: 'ImportExcelForm',
+            title: '奖惩考核批量导入',
+            url: '/PrefManager/RewardPunish/ImportExcel?tmpkey=HR_PF_RewardPunish',
+            width: '750px',
+            height: '450px',
+            callBack: function (iframeId) {
+                top.frames[iframeId].AcceptClick(function (data) {
+                    if (data != null) {
+                        dialogMsg("导入成功！", 1);
+                        btn_search();
+                    }
+                });
+            }, btn: ['开始导入', '关闭']
+        });
+    }
+
+//ImportExcel.cshtml页面
+@{
+    ViewBag.Title = "奖惩考核批量导入";
+    Layout = "~/Views/Shared/_IndexLayout.cshtml";
+}
+<!--单个文件-->
+<script src="~/Content/scripts/uploadify/ajaxfileupload.js"></script>
+
+<script>
+    var tmpkey = request('tmpkey');
+    $(function () {
+        var url = '../../Master/ImportTemplate/DownloadTmp?tmpKey=' + tmpkey;
+        $('#lr-import').attr('href', url);
+        $('#msg').append("<br>--导入须知</br>");
+        $('#msg').append("<br>*1. 导入需要一些时间, 请耐心等待.</br>");
+        $('#msg').append("<br>*2.Excel文件格式要求以在线模板为准.</br>");
+    });
+    
+    function AcceptClick(callBack) {
+        var path = $("#uploadFile").val();
+        if (!path) {
+            dialogMsg("请选择导入的文件(需 *.xlsx 格式)！", 0);
+            return;
+        }
+        window.top.$('.layui-layer-iframe').find('.layui-layer-btn0').hide();
+        showLoadingMsg("正在处理数据，请稍后...");
+        //$('#msg').append('<div class="msgTitle" style="width:100%;height: 100%;text-align: center;margin-top: 10px;font-size: 20px;">注意，导入结果会以excel表格导出！在未输出之前,请耐心等待!</div>');
+        $.ajaxFileUpload({
+            url: "/PrefManager/RewardPunish/ImportExcelData",
+            secureuri: false,
+            timeout: 18000000, //超时时间设置，单位毫秒  5分钟
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+                if (data.Type == 1) {
+                    closeLoadingMsg();
+                    dialogMsg(data.Message, 1);
+                    callBack(data);
+                    dialogClose();
+                }
+                else {
+                    closeLoadingMsg();
+                    $('.msgTitle').attr("style", 'display:none');
+                    $('#redMsg').html("<label>导入失败时显示错误信息：</label><span style='color:red'>" + data.Message + "</span>");
+                    dialogMsg(data.Message, 0);
+                }
+
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                closeLoadingMsg();
+                dialogMsg("请求超时。", 0);
+                
+            },
+        });
+    }
+
+    function btn_close() {
+        dialogClose();
+    }
+
+</script>
+<form id="form1" style="margin-left: 1px; margin-right: 1px;">
+    <div class="formHead">
+        <div class="mcp_container">
+            <div class="col-xs-8 mcp-form-item" style="padding-left:5px;">
+                <input id="uploadFile" name="uploadFile" type="file" style="float:left" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+            </div>
+            <div class="col-xs-4 mcp-form-item">
+                <div class="btn-group">
+                    <a id="lr-import" class="btn btn-default">  <i class="fa fa-download"></i>&nbsp;下载模板</a>
+                </div>
+            </div>
+            <div id="redMsg" class="col-xs-8 mcp-form-item" style="padding-left:5px;">
+                <label>导入前请清空模板中的示例数据</label>
+                <p style="color:red;">考核类型：（KPI、投诉、纪律与操守、横向考核、客户表扬、合理化建议、客户评价）</p>
+            </div>
+            <div class="col-xs-8 mcp-form-item" style="padding-left:5px;width:100%">
+                <div id="msg" style="height: 200px;width:100%">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+//RewardPunishController.cs控制器页面
+		/// <summary>
+        /// 导入之后调用解析的方法名称
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ImportExcelData()
+        {
+            AjaxResultModel ajaxResultModel = new AjaxResultModel();
+            try
+            {
+                HttpFileCollection files = System.Web.HttpContext.Current.Request.Files;
+                if (files != null && files.Count > 0 && files[0].ContentLength > 0 && !string.IsNullOrEmpty(files[0].FileName))
+                {
+                    string path = AppDomain.CurrentDomain.BaseDirectory + @"Upload\temp\";
+                    DirectoryInfo dir = new DirectoryInfo(path);
+                    if (!dir.Exists)
+                    {
+                        dir.Create();
+                    }
+                    string filename = Path.GetFileName(files[0].FileName);
+                    if (!string.IsNullOrEmpty(filename))
+                    {
+                        var keyValue = Guid.NewGuid().ToString();
+                        string FileEextension = Path.GetExtension(files[0].FileName);
+                        filename = keyValue + FileEextension;
+                        string Fullfilename = Path.Combine(path, filename);
+                        files[0].SaveAs(Fullfilename); //先保存本地
+
+                        var currentUser = OperatorProvider.Provider.Current();
+
+                        if (currentUser == null)
+                        {
+                            throw new Exception("无法获取您的登录信息,请退出后重新尝试!");
+                        }
+
+                        rewardPunishBiz.GetExcelDataList(Fullfilename);
+
+                        //用完即删
+                        if (System.IO.File.Exists(Fullfilename))
+                        {
+                            //如果存在则删除
+                            System.IO.File.Delete(Fullfilename);
+                        }
+
+                        ajaxResultModel.Type = 1;
+                        ajaxResultModel.Message = "<br>导入成功!</br>";
+                        return ToJsonResult(ajaxResultModel);
+                    }
+                    else
+                    {
+                        return Error("没有发现您上传的文件名,可能是浏览器兼容问题,请您换个浏览器试试! 详情: files[0].FileName  filename为null");
+                    }
+                }
+                else
+                {
+                    return HttpNotFound("没有发现您要上传的文件!");
+                }
+            }
+            catch (Exception ex)
+            {
+                ajaxResultModel.Message = ex.Message;
+                return ToJsonResult(ajaxResultModel);
+            }
+        }
+	
+//RewardPunishBiz.cs业务页面
+/// <summary>
+        /// 奖惩考核数据导入
+        /// </summary>
+        /// <param name="excelFileName"></param>
+        public void GetExcelDataList(string excelFileName)
+        {
+            try
+            {
+                var departList = departmentBiz.GetDepartmentList();
+                var positionList = positionBiz.GetPositionList();
+                var empployeeList = employeeBiz.GetList<EmployeeEntity>();
+                var currentUser = OperatorProvider.Provider.Current();
+                using (var tool = new ExcelTool(excelFileName))
+                {
+                    DataTable dt = tool.ExcelToDataTable();
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        using (TransactionScope trans = new TransactionScope())
+                        {
+                            foreach (DataRow item in dt.Rows)
+                            {
+                                RewardPunishEntity entity = new RewardPunishEntity();
+                                entity.RPID = Guid.NewGuid().ToString();
+                                entity.EmployeeNo = item["工号"].ToString();
+                                EmployeeEntity employeeEntity= empployeeList.Where(x=>x.EmployeeNo==item["工号"].ToString()).FirstOrDefault();
+                                entity.DepartmentID = employeeEntity.DepartmentId;
+                                entity.DepartmentName = departList.Where(x=>x.DepartmentID==employeeEntity.DepartmentId).Select(x=>x.DepartmentName).FirstOrDefault();
+                                entity.PositionID = employeeEntity.PositionId;
+                                entity.PositionName= positionList.Where(x => x.PositionID == employeeEntity.PositionId).Select(x => x.PositionName).FirstOrDefault();
+                                entity.EmployeeName = item["姓名"].ToString();
+                                entity.RewardPunishType = item["考核类型"].ToString();
+                                entity.DutyMonth = item["月份"].ToString();
+                                entity.Amount = StringToDecimal(item["奖惩金额"].ToString());
+                                entity.RecoveryRate = StringToDecimal(item["回收率"].ToString());
+                                entity.PraiseRate = StringToDecimal(item["好评率"].ToString());
+                                entity.DetailDesc = item["事项描述"].ToString();
+                                entity.CreaterID = currentUser.UserId;
+                                entity.CreateDT = DateTime.Now;
+                                entity.CreaterName = currentUser.UserName;
+                                entity.UpdaterID = currentUser.UserId;
+                                entity.UpdateDT = DateTime.Now;
+                                entity.UpdaterName = currentUser.UserName;
+                                entity.IsActive = true;
+                                Add(entity);
+                            }
+                            trans.Complete();
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("无法解析这个模板,请确认这个模板是否符合要求,或者重新下载最新模板尝试!");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        /// <summary>
+        /// 字符串装数字
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public decimal StringToDecimal(string value)
+        {
+            decimal result = 0;
+            return decimal.TryParse(value, out result) ? result : 0;
+        }	
+	
+	
