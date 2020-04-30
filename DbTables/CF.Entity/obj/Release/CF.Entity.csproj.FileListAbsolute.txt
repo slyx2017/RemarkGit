@@ -1,0 +1,9 @@
+C:\Users\06374\source\repos\DbTables\CF.Entity\bin\Release\CF.Entity.dll
+C:\Users\06374\source\repos\DbTables\CF.Entity\bin\Release\CF.Entity.pdb
+C:\Users\06374\source\repos\DbTables\CF.Entity\obj\Release\CF.Entity.csproj.CoreCompileInputs.cache
+C:\Users\06374\source\repos\DbTables\CF.Entity\obj\Release\CF.Entity.dll
+C:\Users\06374\source\repos\DbTables\CF.Entity\obj\Release\CF.Entity.pdb
+C:\Users\06374\source\repos\DbTables\CF.Entity\obj\Release\CF.Entity.csprojAssemblyReference.cache
+C:\Users\06374\source\repos\DbTables\CF.Entity\bin\Release\DapperExtensions.dll
+C:\Users\06374\source\repos\DbTables\CF.Entity\bin\Release\DapperExtensions.pdb
+C:\Users\06374\source\repos\DbTables\CF.Entity\obj\Release\CF.Entity.csproj.CopyComplete

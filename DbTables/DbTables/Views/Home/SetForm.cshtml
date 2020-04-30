@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "设置表单";
+    Layout = "~/Views/Shared/_LayoutForm.cshtml";
+}
+<script>
+    var keyValue = GetQueryString("keyValue");
+
+    layui.use('form', function () {
+        var form = layui.form;
+        form.render();
+        if (!!keyValue) {
+            $.ajax({
+                type: 'post',
+                url: '/Home/GetEntityForm?keyValue=' + keyValue,
+                success: function (data) {
+                    form.val('form2', data);
+                    //$("#form1").SetWebControls(data);
+                }
+            });
+        }
+
+        
+        
+    });
+    function AcceptClick() {
+        //alert("aaaaaaaa");
+        var param = $("#form1").GetWebControls();
+        $.ajax({
+            type: "post",
+            url: "/Home/SaveForm",
+            data: param,
+            success: function (result) {
+                if (result.code == "1") {
+                    dialogMsg(result.msg);
+                    dialogClose();
+                    parent.reloadTable();
+                }
+                else {
+                    dialogAlert(result.msg);
+                    dialogClose();
+                }
+            }
+        });
+    }
+    
+</script>
+    <form id="form1" class="layui-form"  lay-filter="form2"  style="padding:10px 0 0 0;">
+        <input type="hidden" id="id" />
+        <div class="layui-form-item">
+            <label class="layui-form-label">服务器编号</label>
+            <div class="layui-input-inline">
+                <input type="text" id="serverNo" name="serverNo" lay-verify="serverNo" autocomplete="off" placeholder="请输入服务器编号" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">服务器名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="serverName" name="serverName" lay-verify="serverName" autocomplete="off" placeholder="请输入服务器名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数据库名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="dataBaseName" name="dataBaseName" lay-verify="dataBaseName" autocomplete="off" placeholder="请输入数据库名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+
+            <label class="layui-form-label">登陆名</label>
+            <div class="layui-input-inline">
+                <input type="text" id="userId" name="userId" lay-verify="userId" autocomplete="off" placeholder="请输入登陆名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-inline">
+                <input type="password" id="password" name="password" lay-verify="password" autocomplete="off" placeholder="请输入密码" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+
+            <label class="layui-form-label">是否激活</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" id="isEnable" name="isEnable" lay-skin="switch" lay-filter="switchTest" lay-text="ON|OFF">
+            </div>
+        </div>
+    </form>

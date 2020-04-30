@@ -1,0 +1,92 @@
+﻿
+@{
+    ViewBag.Title = "自动生成C#实体类";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    $(function () {
+        var columns = [
+            { title: '表名', field: 'tablename', width: 180, align: 'left' },
+            {
+                title: '说明', field: 'description', width: 400, align: 'left', formatter:
+                    function (value, row, index) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                }
+            }
+        ];
+        $('#gridTable').datagrid({
+            pageSize: 50,
+            pageList: [50, 100, 200],
+            pagination: true,
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            selectOnCheck: true,
+            checkOnSelect: true,
+            sortName: 'tablename',
+            sortOrder: 'desc',
+            toolbar: '#tb',
+            columns: [columns]
+            //method: 'get',
+            //url: '/Home/GetList'
+        });
+    });
+    function doSearch(value,name) {
+        $('#gridTable').datagrid('clearSelections'); //必选先清除选择项 再重新加载数据
+        var queryParams = {};
+        queryParams.q = value;
+        $('#gridTable').datagrid('options').url = "/Home/GetTableList";
+        $('#gridTable').datagrid('options').queryParams = queryParams;
+        $('#gridTable').datagrid('reload');
+    }
+    function btn_CreateModel() {
+        var row = $('#gridTable').datagrid('getSelected');
+        if (row == null) {
+            $.messager.alert('提示', '请选择需要操作的数据!');
+            return false;
+        }
+
+        var queryParams = {};
+        queryParams.q = row.tablename;
+        queryParams.ns = $("#ns").val();
+        $.ajax({
+            type: "post",
+            url: "/Home/CreateEntityFile",
+            data: queryParams,
+            success: function (json) {
+                console.log(json);
+                $("#txtshow").val(json);
+                $.messager.alert('提示', '实体类创建成功!');
+            },
+            error: function (json) {
+
+            }
+        });
+    }
+</script>
+
+<div class="panel panel-default" style="margin-top:55px;">
+    <div class="panel-heading">
+        <h3 class="panel-title">表生成C#实体类</h3>
+    </div>
+    <div class="panel-body">
+        <table id="gridTable" class="easyui-datagrid" style="width:100%;height:200px"></table>
+        <div id="tb" style="padding:5px;height:auto">
+            <div>
+                表名<input id="txtSearch" class="easyui-searchbox" data-options="prompt:'Please Input TableName',searcher:doSearch" style="width:300px" />
+                命名空间<input id="ns" name="ns" class="easyui-textbox" style="width:200px;">
+                <a onclick="btn_CreateModel()" href="#" class="easyui-linkbutton" iconCls="icon-search" style="float:right">生成</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">C#实体类</h3>
+    </div>
+    <div class="panel-body">
+        <textarea id="txtshow" class="form-control" rows="12"></textarea>
+    </div>
+</div>
+

@@ -1,0 +1,14 @@
+C:\Users\06374\source\repos\DbTables\CF.Biz\bin\Release\CF.Biz.dll
+C:\Users\06374\source\repos\DbTables\CF.Biz\bin\Release\CF.Biz.pdb
+C:\Users\06374\source\repos\DbTables\CF.Biz\bin\Release\CF.Entity.dll
+C:\Users\06374\source\repos\DbTables\CF.Biz\bin\Release\Dapper.dll
+C:\Users\06374\source\repos\DbTables\CF.Biz\bin\Release\DapperExtensions.dll
+C:\Users\06374\source\repos\DbTables\CF.Biz\bin\Release\CF.Entity.pdb
+C:\Users\06374\source\repos\DbTables\CF.Biz\bin\Release\Dapper.xml
+C:\Users\06374\source\repos\DbTables\CF.Biz\bin\Release\DapperExtensions.pdb
+C:\Users\06374\source\repos\DbTables\CF.Biz\obj\Release\CF.Biz.csprojAssemblyReference.cache
+C:\Users\06374\source\repos\DbTables\CF.Biz\obj\Release\CF.Biz.csproj.CoreCompileInputs.cache
+C:\Users\06374\source\repos\DbTables\CF.Biz\obj\Release\CF.Biz.csproj.CopyComplete
+C:\Users\06374\source\repos\DbTables\CF.Biz\obj\Release\CF.Biz.dll
+C:\Users\06374\source\repos\DbTables\CF.Biz\obj\Release\CF.Biz.pdb
+C:\Users\06374\source\repos\DbTables\CF.Biz\bin\Release\WZY.Dapper.dll

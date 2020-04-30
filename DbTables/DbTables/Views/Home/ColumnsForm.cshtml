@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "表的列字段";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    $(function () {
+        var columns = [
+            { title: '表名', field: 'tablename', width: 180, align: 'left' },
+            { title: '字段名', field: 'columnname', width: 150, align: 'left' },
+            { title: '数据类型', field: 'datatype', width:80, align: 'left' },
+            {
+                title: '说明', field: 'description', width: 400, align: 'left', formatter:
+                    function (value, row, index) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                }
+            }
+        ];
+        $('#gridTable').datagrid({
+            pageSize: 50,
+            pageList: [50, 100, 200],
+            pagination: true,
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            selectOnCheck: true,
+            checkOnSelect: true,
+            sortName: 'tablename',
+            sortOrder: 'desc',
+            toolbar: '#tb',
+            columns: [columns]
+            //method: 'get',
+            //url: '/Home/GetList'
+        });
+    });
+    function doSearch(value,name) {
+        $('#gridTable').datagrid('clearSelections'); //必选先清除选择项 再重新加载数据
+        var queryParams = {};
+        queryParams.q = value;
+        queryParams.name = name;
+        $('#gridTable').datagrid('options').url = "/Home/GetList";
+        $('#gridTable').datagrid('options').queryParams = queryParams;
+        $('#gridTable').datagrid('reload');
+    }
+    function btn_getJson() {
+        var tablename = $("#txtSearch").val();
+        if (tablename == "") {
+            alert("表名不能为空！");
+            return false;
+        }
+        var queryParams = {};
+        queryParams.q = tablename;
+        $.ajax({
+            type: "post",
+            url: "/Home/GetJsonData",
+            data: queryParams,
+            success: function (json) {
+                console.log(json);
+                var reg = new RegExp(",", "g");//g,表示全部替换。
+                json = json.replace(reg, ",\r\n");
+                $("#txtshow").val(json);
+            },
+            error: function (json) {
+
+            }
+        });
+    }
+</script>
+
+<div class="panel panel-default" style="margin-top:55px;">
+    <div class="panel-heading">
+        <h3 class="panel-title">表字段和字段说明</h3>
+    </div>
+    <div class="panel-body">
+        <table id="gridTable" class="easyui-datagrid" style="width:100%;height:200px"></table>
+        <div id="tb" style="padding:5px;height:auto">
+            <div>
+                <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'Please Input Value',menu:'#mm',searcher:doSearch" style="width:300px" />
+                <div id="mm">
+                    <div id="divlike" data-options="name:'like'">模糊</div>
+                    <div id="divequal" data-options="name:'equal'">精确</div>
+                </div>
+                <a onclick="btn_getJson()" href="#" class="easyui-linkbutton" iconCls="icon-search" style="float:right">获取JOSN</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">JSON数据</h3>
+    </div>
+    <div class="panel-body">
+        <textarea id="txtshow" class="form-control" rows="12"></textarea>
+    </div>
+</div>
+
+

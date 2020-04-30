@@ -1,0 +1,174 @@
+﻿
+@{
+    ViewBag.Title = "生成所有";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    $(function () {
+        resizelayout();
+        var columns = [
+            { title: '表名', field: 'tablename', width: 180, align: 'left' },
+            {
+                title: '说明', field: 'description', width: 400, align: 'left', formatter:
+                    function (value, row, index) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                }
+            }
+        ];
+        $('#gridTable').datagrid({
+            height: window.innerHeight - $("ul").height() - $(".panel-heading")[0].offsetHeight - 50,
+            pageSize: 50,
+            pageList: [50, 100, 200],
+            pagination: true,
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            selectOnCheck: true,
+            checkOnSelect: true,
+            sortName: 'tablename',
+            sortOrder: 'desc',
+            toolbar: '#tb',
+            columns: [columns]
+            //method: 'get',
+            //url: '/Home/GetList'
+        });
+        
+    });
+    function resizelayout() {
+        var tabHeight = $(window).height() - $("ul").height() - 50;
+        $(".tab-content").css("height", tabHeight);
+        var headingHeight = $(".panel-heading")[0].offsetHeight;
+        $("#txtentityshow").css("height", tabHeight - headingHeight);
+        $("#txtbizshow").css("height", tabHeight - headingHeight);
+        $("#txtctrlshow").css("height", tabHeight - headingHeight);
+        $("#txtindexshow").css("height", tabHeight - headingHeight);
+        $("#txtformshow").css("height", tabHeight - headingHeight);
+    }
+    function doSearch(value,name) {
+        $('#gridTable').datagrid('clearSelections'); //必选先清除选择项 再重新加载数据
+        var queryParams = {};
+        queryParams.q = value;
+        $('#gridTable').datagrid('options').url = "/Home/GetTableList";
+        $('#gridTable').datagrid('options').queryParams = queryParams;
+        $('#gridTable').datagrid('reload');
+        resizelayout();
+    }
+    function btn_CreateAll() {
+        var row = $('#gridTable').datagrid('getSelected');
+        if (row == null) {
+            $.messager.alert('提示', '请选择需要操作的数据!');
+            return false;
+        }
+
+        var queryParams = {};
+        queryParams.q = row.tablename;
+        queryParams.ns = $("#ns").val();
+        $.ajax({
+            type: "post",
+            url: "/Home/CreateAllFile",
+            data: queryParams,
+            success: function (result) {
+                //console.log(json);
+                $("#txtentityshow").val(result.entityStr);
+                $("#txtbizshow").val(result.bizStr);
+                $("#txtctrlshow").val(result.ctrlStr);
+                $("#txtindexshow").val(result.indexStr);
+                $("#txtformshow").val(result.formStr);
+                $.messager.alert('提示', '全部生成成功!');
+            },
+            error: function (json) {
+
+            }
+        });
+    }
+</script>
+
+<div style="margin-top:50px;">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#tablerole" aria-controls="tablerole" role="tab" data-toggle="tab">表查询</a></li>
+        <li role="presentation"><a href="#entityrole" aria-controls="entityrole" role="tab" data-toggle="tab">实体类</a></li>
+        <li role="presentation"><a href="#bizrole" aria-controls="bizrole" role="tab" data-toggle="tab">业务类</a></li>
+        <li role="presentation"><a href="#ctrlrole" aria-controls="ctrlrole" role="tab" data-toggle="tab">控制器类</a></li>
+        <li role="presentation"><a href="#indexrole" aria-controls="indexrole" role="tab" data-toggle="tab">Index页面</a></li>
+        <li role="presentation"><a href="#formrole" aria-controls="formrole" role="tab" data-toggle="tab">Form页面</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="tablerole">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">C#生成实体类和业务类</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="gridTable" class="easyui-datagrid" style="width:100%;"></div>
+                    <div id="tb" style="padding:5px;height:auto">
+                        <div>
+                            表名<input id="txtSearch" class="easyui-searchbox" data-options="prompt:'Please Input TableName',searcher:doSearch" style="width:300px" />
+                            命名空间<input id="ns" name="ns" class="easyui-textbox" style="width:200px;">
+                            <a onclick="btn_CreateAll()" href="#" class="easyui-linkbutton" iconCls="icon-search" style="float:right">生成</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="entityrole">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">实体类</h3>
+                </div>
+                <div class="panel-body">
+                    <textarea id="txtentityshow" class="form-control" style="height:100px;"></textarea>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="bizrole">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">业务类</h3>
+                </div>
+                <div class="panel-body">
+                    <textarea id="txtbizshow" class="form-control" style="height:100px;"></textarea>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="ctrlrole">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">控制器类</h3>
+                </div>
+                <div class="panel-body">
+                    <textarea id="txtctrlshow" class="form-control" style="height:100px;"></textarea>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="indexrole">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Index页面</h3>
+                </div>
+                <div class="panel-body">
+                    <textarea id="txtindexshow" class="form-control" style="height:100px;"></textarea>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="formrole">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Form页面</h3>
+                </div>
+                <div class="panel-body">
+                    <textarea id="txtformshow" class="form-control" style="height:100px;"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

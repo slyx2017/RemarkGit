@@ -1,0 +1,266 @@
+﻿@{
+    ViewBag.Title = "字典";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div style="margin-top:50px;">
+    <div class="layui-card">
+        <div id="panelButton" class="layui-card-body">
+            <div style="text-align:left;width:20%;float:left;">
+                <div style="font-weight:600;">设置</div>
+            </div>
+            <div style="text-align:right;width:80%;float:left;">
+                <div class="layui-btn-group">
+                    <button class="layui-btn layui-btn-sm" data-type="search"><i class="layui-icon layui-icon-search"></i> 查询</button>
+                </div>
+                <div class="layui-btn-group">
+                    <button type="button" class="layui-btn layui-btn-sm" data-type="add"><i class="layui-icon layui-icon-add-1"></i> 新增</button>
+                    <button type="button" class="layui-btn layui-btn-sm" data-type="edit"><i class="layui-icon layui-icon-edit"></i> 编辑</button>
+                    <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" data-type="del"><i class="layui-icon layui-icon-delete"></i> 删除</button>
+                </div>
+                <div class="layui-btn-group">
+                    <button type="button" class="layui-btn layui-btn-sm" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i> 刷新</button>
+                    <button type="button" class="layui-btn layui-btn-sm" data-type="detail"><i class="layui-icon layui-icon-about"></i> 查看</button>
+                    <button type="button" class="layui-btn layui-btn-sm" data-type="setting"><i class="layui-icon layui-icon-set"></i> 设置</button>
+                </div>
+            </div>
+            
+        </div>
+        <div id="panelSearch" class="layui-form">
+            <div class="layui-form-item" style="margin:0px;padding-top:10px;">
+                <div class="layui-inline">
+                    <label class="layui-form-label">编号</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="serverNo" name="serverNo" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="dataBaseName" name="dataBaseName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table id="dblist" lay-filter="test"></table>
+    </div>
+</div>
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+        var panelSearchHeight = $("#panelSearch").height();
+        var panelButtonHeight = 50;
+        var tbheight = 'full-' + (panelSearchHeight + panelButtonHeight + 50) + '';
+        table.render({
+            elem: '#dblist',
+            id: 'idServer',
+            height: tbheight,
+            url: '/Home/GetServerList',
+            page: true,
+            request: {
+                pageName: 'pageIndex', //页码的参数名称，默认：page
+                limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            },
+            //defaultToolbar: ['filter', 'print', 'exports'],
+            cols: [[
+                { type: 'checkbox', fixed: 'left' },
+                { field: 'id', title: 'ID', width: 80, sort: true },
+                { field: 'serverNo', title: '服务器编号', width: 150, sort: true },
+                { field: 'serverName', title: '服务器名称', width: 150, sort: true, templet: '#titleTpl' },
+                { field: 'dataBaseName', title: '数据库', sort: true },
+                {
+                    field: 'isEnable', title: '是否激活', templet: function (row) {
+                        if (row.isEnable) {
+                            return "是";
+                        }
+                        else {
+                            return "否";
+                        }
+                    }
+                },
+                { fixed: 'right', title: '操作', width: 200, align: 'center', toolbar: '#rowBarDemo' },
+            ]]
+        });
+        var active = {
+            add: function () {
+                add();
+            },
+            edit: function () {
+                var rows = getCheckRows();
+                if (!rows) return;
+                if (rows.length > 1) {
+                    layer.msg('只能选一条数据操作', { icon: 5 });
+                    return false;
+                }
+                eidt(rows[0].id);
+            },
+            del: function () {
+                var rows = getCheckRows();
+                if (!rows) return;
+                var ids = "";
+                $.each(rows, function (index, item) {
+                    ids += item.id + ",";
+                });
+                ids = ids.substr(0, ids.length - 1);
+                del(ids);
+            },
+            refresh: function () {
+                table.reload('idServer');
+            },
+            detail: function () {
+                var rows = getCheckRows();
+                if (!rows) return;
+                if (rows.length > 1) {
+                    layer.msg('只能选一条数据操作', { icon: 5 });
+                    return false;
+                }
+                detail(rows[0].id);
+            },
+            search: function () {
+                var serverNo = $("#serverNo").val();
+                var dataBaseName = $("#dataBaseName").val();
+                table.reload('idServer', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    where: {
+                        serverNo: serverNo,
+                        dataBaseName: dataBaseName
+                    }
+                }, 'data');
+            },
+            setting: function () {
+                var rows = getCheckRows();
+                if (!rows) return;
+                if (rows.length > 1) {
+                    layer.msg('只能选一条数据操作', { icon: 5 });
+                    return false;
+                }
+                $.ajax({
+                    type: "post",
+                    url: "/Home/SetServerName?serverid=" + rows[0].id,
+                    success: function (result) {
+                        if (result.code == "1") {
+                            layer.msg(result.msg);
+                            table.reload('idServer');
+                        }
+                        else {
+                            layer.alert(result.msg);
+                        }
+                    }
+                });
+            }
+        }
+        table.on('tool(test)', function (obj) {
+            var row = obj.data;
+            var layEvent = obj.event;
+            if (layEvent === 'detail') {
+                detail(row.id);
+            } else if (layEvent === 'del') {
+                del(row.id);
+            }
+            else if (layEvent === 'edit') {
+                eidt(row.id);
+            }
+        });
+        
+
+        //按钮事件操作
+        $('#panelButton .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //获取勾选的行数据
+        function getCheckRows() {
+            var checkStatus = table.checkStatus('idServer')
+                , rows = checkStatus.data;
+            if (rows.length == 0) {
+                layer.msg('请选择数据', { icon: 5 });
+                return false;
+            }
+            return rows;
+        }
+        //单击行操作
+        table.on('row(test)', function (obj) {
+            obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+
+        });
+    });
+    //新增
+    function add() {
+        layer.open({
+            type: 2
+            , title: '新增'
+            , content: '/Home/SetForm'
+            , maxmin: true
+            , area: ['500px', '450px']
+            , btn: ['保存', '关闭']
+            , yes: function (index, layero) {
+                var iframeWindow = window['layui-layer-iframe' + index];
+                iframeWindow.AcceptClick();
+            }
+        });
+    }
+    //编辑
+    function eidt(id) {
+        layer.open({
+            type: 2
+            , title: '编辑'
+            , content: '/Home/SetForm?keyValue=' + id
+            , maxmin: true
+            , area: ['500px', '450px']
+            , btn: ['保存', '关闭']
+            , yes: function (index, layero) {
+                var iframeWindow = window['layui-layer-iframe' + index];
+                iframeWindow.AcceptClick();
+            }
+        });
+    }
+    //删除
+    function del(ids) {
+        layer.confirm('确认删除吗？', function (index) {
+            $.ajax({
+                type: "post",
+                url: "/Home/RemoveForm?keyValue=" + ids,
+                success: function (result) {
+                    if (result.code == "1") {
+                        layer.msg(result.msg);
+                        layer.close(index);
+                        reloadTable();
+                    }
+                    else {
+                        layer.alert(result.msg);
+                    }
+                }
+            });
+        });
+    }
+    //详情
+    function detail(id) {
+        layer.open({
+            type: 2
+            , title: '详情'
+            , content: '/Home/SetForm?keyValue=' + id
+            , maxmin: true
+            , area: ['500px', '450px']
+            , btn: null
+        });
+    }
+    //刷新表格
+    function reloadTable() {
+        $("button[data-type='refresh']")[0].click();
+    }
+</script>
+<script type="text/html" id="rowBarDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger layui-btn-danger" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="titleTpl">
+    {{#  if(d.id%2 ==0){ }}
+    <span style="color:red;">{{d.serverName}}</span>
+    {{#  } else { }}
+    {{d.serverName}}
+    {{#  } }}
+</script>
