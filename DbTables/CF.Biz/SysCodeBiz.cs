@@ -12,11 +12,11 @@ namespace CF.Biz
     /// <summary>
     /// 字典Biz类
     /// </summary>
-    public class SysCodeBiz
+    public class SysCodeBiz:BaseService<SysCodeEntity>
     {
         public SysCodeEntity GetCodeEntity(string keyValue)
         {
-            SysCodeEntity entity= DapperHelper.GetById<SysCodeEntity>(keyValue);
+            SysCodeEntity entity= GetById(keyValue);
             return entity;
         }
     }

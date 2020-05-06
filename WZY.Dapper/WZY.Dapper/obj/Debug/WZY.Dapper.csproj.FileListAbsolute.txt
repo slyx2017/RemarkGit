@@ -1,0 +1,11 @@
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\bin\Debug\WZY.Dapper.dll
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\bin\Debug\WZY.Dapper.pdb
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\bin\Debug\Dapper.dll
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\bin\Debug\DapperExtensions.dll
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\bin\Debug\Dapper.xml
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\bin\Debug\DapperExtensions.pdb
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\obj\Debug\WZY.Dapper.csprojAssemblyReference.cache
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\obj\Debug\WZY.Dapper.csproj.CoreCompileInputs.cache
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\obj\Debug\WZY.Dapper.csproj.CopyComplete
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\obj\Debug\WZY.Dapper.dll
+C:\Users\06374\Desktop\RemarkGit\WZY.Dapper\WZY.Dapper\obj\Debug\WZY.Dapper.pdb

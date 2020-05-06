@@ -3,3 +3,14 @@
 ################################################################################
 
 /DbTables/.vs
+/DbTables/packages
+/DbTables/CF.Entity/obj/Debug
+/DbTables/CF.Biz/obj/Debug
+/DbTables/CF.Biz/obj/Debug
+/DbTables/DbTables/obj/Debug
+/DbTables/DbTables/bin
+/WZY.Dapper/packages
+/WZY.Dapper/obj/Debug
+/WZY.Dapper/bin/Debug
+/WZY.Dapper/.vs/WZY.Dapper/v15
+

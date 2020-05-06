@@ -12,3 +12,17 @@ C:\Users\06374\source\repos\DbTables\CF.Biz\obj\Debug\CF.Biz.csproj.CopyComplete
 C:\Users\06374\source\repos\DbTables\CF.Biz\obj\Debug\CF.Biz.dll
 C:\Users\06374\source\repos\DbTables\CF.Biz\obj\Debug\CF.Biz.pdb
 C:\Users\06374\source\repos\DbTables\CF.Biz\bin\Debug\WZY.Dapper.dll
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\bin\Debug\CF.Biz.dll
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\bin\Debug\CF.Biz.pdb
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\bin\Debug\CF.Entity.dll
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\bin\Debug\Dapper.dll
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\bin\Debug\WZY.Dapper.dll
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\bin\Debug\DapperExtensions.dll
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\bin\Debug\CF.Entity.pdb
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\bin\Debug\Dapper.xml
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\bin\Debug\DapperExtensions.pdb
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\obj\Debug\CF.Biz.csprojAssemblyReference.cache
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\obj\Debug\CF.Biz.csproj.CoreCompileInputs.cache
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\obj\Debug\CF.Biz.csproj.CopyComplete
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\obj\Debug\CF.Biz.dll
+C:\Users\06374\Desktop\RemarkGit\DbTables\CF.Biz\obj\Debug\CF.Biz.pdb

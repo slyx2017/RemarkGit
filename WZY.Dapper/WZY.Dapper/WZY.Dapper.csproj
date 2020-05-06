@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseService.cs" />
     <Compile Include="DapperHelper.cs" />
     <Compile Include="PagedCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
