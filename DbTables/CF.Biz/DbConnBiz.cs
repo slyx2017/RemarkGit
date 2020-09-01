@@ -62,7 +62,7 @@ Left join sys.types d on d.user_type_id=b.user_type_id
             string rn = "\r\n";
             string filecs = "";
             filecs += "@{" + rn;
-            filecs += $"     ViewBag.Title = {desc}编辑;" + rn;
+            filecs += $"     ViewBag.Title = \"{desc+ "编辑"}\";" + rn;
             filecs += "     Layout = \"~/Views/Shared/_Form.cshtml\";" + rn;
             filecs += "}" + rn;
             filecs += rn;
@@ -141,9 +141,9 @@ Left join sys.types d on d.user_type_id=b.user_type_id
                 sb.Append("                <div class=\"col-xs-6\">" + rn);
                 sb.Append("                    <label class=\"form-label col-md-4\">" + item.description + "</label>" + rn);
                 sb.Append("                    <div class=\"col-md-8\">" + rn);
-                if (GetDataType(item.datatype) == "DateTime?")
+                if (GetDataType(item.datatype) == "DateTime")
                 {
-                    sb.Append("                        <input id=\"" + item.columnname + "\" name=\"" + item.columnname + "\" type=\"text\" class=\"form-control input-wdatepicker\"  onfocus=\"WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})\" autocomplete=\"off\" />" + rn);
+                    sb.Append("                        <input id=\"" + item.columnname + "\" name=\"" + item.columnname + "\" type=\"text\" class=\"form-control input-wdatepicker\"  onfocus=\"WdatePicker({ dateFmt: 'yyyy-MM-dd'})\" autocomplete=\"off\" />" + rn);
 
                 }
                 else
@@ -158,6 +158,10 @@ Left join sys.types d on d.user_type_id=b.user_type_id
                 {
                     sb.Append("            </div>" + rn);
                 }
+            }
+            if (n==1)
+            {
+                sb.Append("             </div>" + rn);
             }
             sb.Append("        </div>" + rn);
             sb.Append("    </div>" + rn);
@@ -221,7 +225,7 @@ Left join sys.types d on d.user_type_id=b.user_type_id
             string rn = "\r\n";
             string filecs = "";
             filecs += "@{" + rn;
-            filecs += $"     ViewBag.Title = {desc};" + rn;
+            filecs += $"     ViewBag.Title = \"{desc}\";" + rn;
             filecs += "     Layout = \"~/Views/Shared/_IndexLayout.cshtml\";" + rn;
             filecs += "}" + rn;
             filecs += rn;
@@ -229,7 +233,7 @@ Left join sys.types d on d.user_type_id=b.user_type_id
             #region script 拼接
             filecs += "<script>" + rn;
             filecs += "     $(function () {" + rn;
-            filecs += "             GetGrid();" + rn;
+            filecs += "           GetGrid();" + rn;
             filecs += "     });" + rn;
             filecs += rn;
             filecs += "     //加载表格" + rn;
@@ -237,7 +241,7 @@ Left join sys.types d on d.user_type_id=b.user_type_id
             filecs += "             var columnsAll = [" + rn;
             foreach (var item in collection)
             {
-                if (item.columnname == collection.FirstOrDefault().columnname || item.columnname == "CreaterID" || item.columnname == "UpdaterID")
+                if (item.columnname == collection.FirstOrDefault().columnname || item.columnname == "CreaterID" || item.columnname == "UpdaterID" || item.columnname.EndsWith("ID"))
                 {
                     filecs += "                 { title: '" + (string.IsNullOrEmpty(item.description) ? item.columnname : item.description) + "', field: '" + item.columnname + "', hidden: true }," + rn;
                 }
@@ -254,7 +258,11 @@ Left join sys.types d on d.user_type_id=b.user_type_id
                         filecs += "                                 return '否'" + rn;
                         filecs += "                         }" + rn;
                         filecs += "                     }" + rn;
-                        filecs += "                 }" + rn;
+                        filecs += "                 }," + rn;
+                    }
+                    else if(GetDataType(item.datatype) == "DateTime")
+                    {
+                        filecs += "                 { title: '" + (string.IsNullOrEmpty(item.description) ? item.columnname : item.description) + "', field: '" + item.columnname + "', width: 150, align: 'left',formatter:com.formatDate }," + rn;
                     }
                     else
                     {
@@ -269,10 +277,10 @@ Left join sys.types d on d.user_type_id=b.user_type_id
             filecs += "                 pageSize: 50," + rn;
             filecs += "                 pageList: [50, 100, 200]," + rn;
             filecs += "                 pagination: true," + rn;
-            filecs += "                 rownumbers: true" + rn;
-            filecs += "                 singleSelect: true" + rn;
-            filecs += "                 selectOnCheck: true" + rn;
-            filecs += "                 checkOnSelect: true" + rn;
+            filecs += "                 rownumbers: true," + rn;
+            filecs += "                 singleSelect: true," + rn;
+            filecs += "                 selectOnCheck: true," + rn;
+            filecs += "                 checkOnSelect: true," + rn;
             filecs += "                 sortName: 'CreateDT'," + rn;
             filecs += "                 sortOrder: 'desc'," + rn;
             filecs += "                 idField: '" + collection.FirstOrDefault().columnname + "'," + rn;
@@ -288,7 +296,10 @@ Left join sys.types d on d.user_type_id=b.user_type_id
 
             filecs += "     //查询" + rn;
             filecs += "     function btn_search() {" + rn;
-            filecs += "         $('#gridTable').datagrid('clearSelections'); //必选先清除选择项 再重新加载数据" + rn;
+            filecs += "         var rows = $('#gridTable').datagrid('getRows');" + rn;
+            filecs += "         if (rows != undefined && rows.length > 0) {" + rn;
+            filecs += "             $('#gridTable').datagrid('clearSelections'); //必选先清除选择项 再重新加载数据" + rn;
+            filecs += "         }" + rn;
             filecs += "         var queryParams = {};" + rn;
             filecs += "         queryParams = $('.searchPanel').GetWebControls();" + rn;
             filecs += "         $('#gridTable').datagrid('options').url = '/" + rootPath + "/" + q + "/GetPageListJson';" + rn;
@@ -407,7 +418,7 @@ Left join sys.types d on d.user_type_id=b.user_type_id
                 sb.Append("                    <div class=\"col-xs-3\">" + rn);
                 sb.Append("                        <label class=\"form-label col-md-4\">"+item.description+"</label>" + rn);
                 sb.Append("                        <div class=\"col-md-8\">" + rn);
-                if (GetDataType(item.datatype)=="DateTime?")
+                if (GetDataType(item.datatype)=="DateTime")
                 {
                     sb.Append("                            <input id=\"" + item.columnname + "\" name=\"" + item.columnname + "\" type=\"text\" class=\"form-control input-wdatepicker\"  onfocus=\"WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})\" autocomplete=\"off\" />" + rn);
 
@@ -425,6 +436,7 @@ Left join sys.types d on d.user_type_id=b.user_type_id
                     sb.Append("                </div>" + rn);
                 }
             }
+            sb.Append("                 </div>" + rn);
             sb.Append("            </div>" + rn);
             sb.Append("            <div class=\"gridPanel\">" + rn);
             sb.Append("                <table id=\"gridTable\"></table>" + rn);
@@ -484,7 +496,8 @@ Left join sys.types d on d.user_type_id=b.user_type_id
                 q = q.Substring(LastIndex);
             }
             var entityName = q + "Entity";
-            string usinglist = "using DapperExtensions.Mapper;";
+            string usinglist = @"using DapperExtensions.Mapper;
+using System;";
             string rn = "\r\n";
             string filecs = "";
             string nsname = string.IsNullOrEmpty(ns) ? "MCP.Entity" : ns + ".Entity";
@@ -519,7 +532,14 @@ Left join sys.types d on d.user_type_id=b.user_type_id
                 bodystr += "            ///<summary>" + rn;
                 bodystr += "            ///" + item.description?.Replace("\r\n", ";") + rn;
                 bodystr += "            ///</summary>" + rn;
-                bodystr += "            public " + GetDataType(item.datatype) + " " + item.columnname + " {get;set;}" + rn;
+                if (GetDataType(item.datatype) == "DateTime" || GetDataType(item.datatype) == "decimal")
+                {
+                    bodystr += "            public " + GetDataType(item.datatype) + "? " + item.columnname + " {get;set;}" + rn;
+                }
+                else
+                {
+                    bodystr += "            public " + GetDataType(item.datatype) + " " + item.columnname + " {get;set;}" + rn;
+                }
                 bodystr += rn;
             }
             filecs += bodystr;
@@ -600,11 +620,11 @@ using System.Transactions;
             bodystr += "            {" + rn;
             bodystr += "                    string sqlquery = \" SELECT a.* FROM [dbo].[" + tableName + "] a WHERE a.IsActive = 1 \";" + rn;
             bodystr += "                    DynamicParameters parameters = new DynamicParameters();" + rn;
-            bodystr += "                    //月份" + rn;
-            bodystr += "                    if (!string.IsNullOrEmpty(queryModel?.Month))" + rn;
+            bodystr += "                    //创建人" + rn;
+            bodystr += "                    if (!string.IsNullOrEmpty(queryModel.CreaterName))" + rn;
             bodystr += "                    {" + rn;
-            bodystr += "                            sqlquery += \" and a.Month = @Month  \";" + rn;
-            bodystr += "                            parameters.Add(\"@Month\", queryModel?.Month.Trim());" + rn;
+            bodystr += "                            sqlquery += \" and a.CreaterName = @CreaterName  \";" + rn;
+            bodystr += "                            parameters.Add(\"@CreaterName\", queryModel.CreaterName.Trim());" + rn;
             bodystr += "                    }" + rn;
             bodystr += rn;
 
@@ -742,6 +762,8 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Text;
 using System.Transactions;
+using System.Web.Mvc;
+using MCP.OA.Util;
 ";
             usinglist = string.Format(usinglist, ns);
             filecs += usinglist + rn;
@@ -759,6 +781,9 @@ using System.Transactions;
             var bodystr = "";
             bodystr += $"            private readonly {q}Biz {q.ToLower()}Biz;" + rn;
 
+            bodystr += "            /// <summary>" + rn;
+            bodystr += "            /// 构造函数" + rn;
+            bodystr += "            /// </summary>" + rn;
             bodystr += $"            public {q}Controller()" + rn;
             bodystr += "            {" + rn;
             bodystr += $"                    {q.ToLower()}Biz = new {q}Biz();" + rn;
@@ -800,14 +825,14 @@ using System.Transactions;
             bodystr += "                    List<SortDirection> orderBy = new List<SortDirection>()" + rn;
             bodystr += "                    {" + rn;
             bodystr += "                            new SortDirection(pageInfo.Sort,pageInfo.Order.Equals(\"asc\",StringComparison.CurrentCultureIgnoreCase))" + rn;
-            bodystr += "                    }" + rn;
+            bodystr += "                    };" + rn;
             bodystr += rn;
             bodystr += $"                    var collection = await {q.ToLower()}Biz.GetPagedCollection(queryModel, orderBy, pageInfo.Page, pageInfo.Rows);" + rn;
             bodystr += $"                    var grid = new JQueryEsayUiGrid<{q}Entity>" + rn;
             bodystr += "                    {" + rn;
             bodystr += "                            total = collection.TotalCount," + rn;
-            bodystr += $"                            rows = collection.DataList ?? new List<{q}Entity>()" + rn;
-            bodystr += "                    }" + rn;
+            bodystr += $"                           rows = collection.DataList ?? new List<{q}Entity>()" + rn;
+            bodystr += "                    };" + rn;
             bodystr += "                    return ToJsonResult(grid);" + rn;
             bodystr += "            }" + rn;
             bodystr += rn;
@@ -844,11 +869,8 @@ using System.Transactions;
             bodystr += "                            model.CreaterID = opUserInfo.UserId;" + rn;
             bodystr += "                            model.CreateDT = time;" + rn;
             bodystr += "                            model.CreaterName = opUserInfo.UserName;" + rn;
-            bodystr += "                            model.UpdaterID = opUserInfo.UserId;" + rn;
-            bodystr += "                            model.UpdateDT = time;" + rn;
-            bodystr += "                            model.UpdaterName = opUserInfo.UserName;" + rn;
             bodystr += "                            model.IsActive = true;" + rn;
-            bodystr += "                            model." + collection.FirstOrDefault().columnname + " = Guid.NewGuid().ToString();" + rn;
+            bodystr += "                            model." + collection.FirstOrDefault().columnname + " = Guid.NewGuid().GuidToLongId();" + rn;
             bodystr += $"                            string id = {q.ToLower()}Biz.Add(model);" + rn;
             bodystr += "                            if (!string.IsNullOrEmpty(id))" + rn;
             bodystr += "                            {" + rn;
@@ -946,7 +968,7 @@ using System.Transactions;
                 case "money":
                 case "numeric":
                 case "decimal":
-                    CSharpDataType = "decimal?";//decim
+                    CSharpDataType = "decimal";//decim
                     break;
                 case "float":
                     CSharpDataType = "double";
@@ -958,7 +980,7 @@ using System.Transactions;
                 case "datetime":
                 case "timestamp":
                 case "date":
-                    CSharpDataType = "DateTime?";
+                    CSharpDataType = "DateTime";
                     break;
                 case "char":
                 case "text":

@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "代码格式化";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="margin-top:50px;">
+    <div class="editor-frame">
+        <div id="monacoeditor" style="border:1px solid #000000;"></div>
+    </div>
+</div>
+<script src="~/Scripts/min/vs/loader.js"></script>
+<script src="~/Scripts/min/vs/editor/editor.main.nls.js"></script>
+<script src="~/Scripts/min/vs/editor/editor.main.js"></script>
+<script>
+    var tabHeight = $(window).height() - $("ul").height() - 30;
+    $("#monacoeditor").css("height", tabHeight);
+    require.config({
+        paths: {
+            'vs': '/Scripts/min/vs',
+            'vs/nls': {
+                availableLanguages: {
+                    '*': 'zh-cn'
+                }
+            }
+        }
+    });
+    var editor = monaco.editor.create(document.getElementById('monacoeditor'), {
+        value: "<div>我是插入的代码</div>",
+        language: 'html'
+    });
+</script>

@@ -1,0 +1,13 @@
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Release\CF.DataBase.dll
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Release\CF.DataBase.pdb
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Release\CF.Entity.dll
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Release\Dapper.dll
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Release\CF.Entity.pdb
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Release\Dapper.xml
+C:\Users\06374\source\repos\DbTables\CF.DataBase\obj\Release\CF.DataBase.csprojAssemblyReference.cache
+C:\Users\06374\source\repos\DbTables\CF.DataBase\obj\Release\CF.DataBase.csproj.CoreCompileInputs.cache
+C:\Users\06374\source\repos\DbTables\CF.DataBase\obj\Release\CF.DataBase.csproj.CopyComplete
+C:\Users\06374\source\repos\DbTables\CF.DataBase\obj\Release\CF.DataBase.dll
+C:\Users\06374\source\repos\DbTables\CF.DataBase\obj\Release\CF.DataBase.pdb
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Release\DapperExtensions.dll
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Release\DapperExtensions.pdb

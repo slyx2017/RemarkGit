@@ -16,10 +16,10 @@
       <publishTime>09/10/2013 16:29:20</publishTime>
     </File>
     <File Include="bin/CF.Biz.dll">
-      <publishTime>04/30/2020 17:15:37</publishTime>
+      <publishTime>08/18/2020 11:59:37</publishTime>
     </File>
     <File Include="bin/CF.Biz.pdb">
-      <publishTime>04/30/2020 17:15:37</publishTime>
+      <publishTime>08/18/2020 11:59:37</publishTime>
     </File>
     <File Include="bin/CF.DataBase.dll">
       <publishTime>04/29/2020 13:45:18</publishTime>
@@ -28,13 +28,13 @@
       <publishTime>04/29/2020 13:45:18</publishTime>
     </File>
     <File Include="bin/CF.Entity.dll">
-      <publishTime>04/30/2020 17:15:37</publishTime>
+      <publishTime>08/18/2020 11:59:37</publishTime>
     </File>
     <File Include="bin/CF.Entity.pdb">
-      <publishTime>04/30/2020 17:15:37</publishTime>
+      <publishTime>08/18/2020 11:59:37</publishTime>
     </File>
     <File Include="bin/Dapper.dll">
-      <publishTime>09/27/2019 09:55:36</publishTime>
+      <publishTime>06/19/2019 02:25:40</publishTime>
     </File>
     <File Include="bin/DapperExtensions.dll">
       <publishTime>08/08/2017 22:38:30</publishTime>
@@ -43,10 +43,10 @@
       <publishTime>08/08/2017 22:38:30</publishTime>
     </File>
     <File Include="bin/DbTables.dll">
-      <publishTime>04/30/2020 17:15:37</publishTime>
+      <publishTime>08/18/2020 11:59:38</publishTime>
     </File>
     <File Include="bin/DbTables.pdb">
-      <publishTime>04/30/2020 17:15:37</publishTime>
+      <publishTime>08/18/2020 11:59:38</publishTime>
     </File>
     <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
       <publishTime>05/24/2018 13:38:22</publishTime>
@@ -3397,7 +3397,7 @@
       <publishTime>12/19/2019 11:11:05</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>04/29/2020 13:45:19</publishTime>
+      <publishTime>08/18/2020 11:59:38</publishTime>
     </File>
   </ItemGroup>
 </Project>

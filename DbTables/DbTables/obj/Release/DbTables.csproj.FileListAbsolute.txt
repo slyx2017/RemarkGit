@@ -62,7 +62,6 @@ C:\Users\06374\source\repos\DbTables\DbTables\bin\System.Web.WebPages.dll
 C:\Users\06374\source\repos\DbTables\DbTables\bin\System.Web.WebPages.Razor.dll
 C:\Users\06374\source\repos\DbTables\DbTables\bin\WebGrease.dll
 C:\Users\06374\source\repos\DbTables\DbTables\bin\CF.Entity.pdb
-C:\Users\06374\source\repos\DbTables\DbTables\bin\Dapper.xml
 C:\Users\06374\source\repos\DbTables\DbTables\bin\System.Web.Helpers.xml
 C:\Users\06374\source\repos\DbTables\DbTables\bin\System.Web.Mvc.xml
 C:\Users\06374\source\repos\DbTables\DbTables\bin\System.Web.Optimization.xml

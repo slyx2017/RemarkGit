@@ -6,3 +6,4 @@ C:\Users\06374\source\repos\DbTables\CF.Entity\obj\Debug\CF.Entity.pdb
 C:\Users\06374\source\repos\DbTables\CF.Entity\bin\Debug\DapperExtensions.dll
 C:\Users\06374\source\repos\DbTables\CF.Entity\bin\Debug\DapperExtensions.pdb
 C:\Users\06374\source\repos\DbTables\CF.Entity\obj\Debug\CF.Entity.csproj.CopyComplete
+C:\Users\06374\source\repos\DbTables\CF.Entity\obj\Debug\CF.Entity.csprojAssemblyReference.cache

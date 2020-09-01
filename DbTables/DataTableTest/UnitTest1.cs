@@ -9,8 +9,8 @@ namespace DataTableTest
         [TestMethod]
         public void TestMethod1()
         {
-            decimal b = 4;
-            decimal a = Math.Ceiling(7/b);
+            decimal b = 2;
+            decimal a = Math.Ceiling(1%b);
             Console.WriteLine(a.ToString());
         }
     }

@@ -17,7 +17,7 @@
             }
         ];
         $('#gridTable').datagrid({
-            height: window.innerHeight - $("ul").height() - $(".panel-heading")[0].offsetHeight - 50,
+            height: window.innerHeight - $("ul").height() - $(".panel-heading")[0].offsetHeight - 350,
             pageSize: 50,
             pageList: [50, 100, 200],
             pagination: true,
@@ -29,12 +29,51 @@
             sortName: 'tablename',
             sortOrder: 'desc',
             toolbar: '#tb',
-            columns: [columns]
-            //method: 'get',
-            //url: '/Home/GetList'
+            columns: [columns],
+            onClickRow: function (rowIndex, rowData) {
+                doSearchColumn(rowData.tablename,"equ");
+            }
         });
-        
+
+        InitGridColumnTable();
+
     });
+    function InitGridColumnTable() {
+        var columns = [
+            { title: '表名', field: 'tablename', width: 180, align: 'left' },
+            { title: '字段名', field: 'columnname', width: 150, align: 'left' },
+            { title: '数据类型', field: 'datatype', width: 80, align: 'left' },
+            {
+                title: '说明', field: 'description', width: 400, align: 'left', formatter:
+                    function (value, row, index) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }
+            }
+        ];
+        $('#gridColumnTable').datagrid({
+            height:300,
+            pageSize: 50,
+            pageList: [50, 100, 200],
+            pagination: true,
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            selectOnCheck: true,
+            checkOnSelect: true,
+            sortName: 'tablename',
+            sortOrder: 'desc',
+            columns: [columns]
+        });
+    }
+    function doSearchColumn(value, name) {
+        $('#gridColumnTable').datagrid('clearSelections'); //必选先清除选择项 再重新加载数据
+        var queryParams = {};
+        queryParams.q = value;
+        queryParams.name = name;
+        $('#gridColumnTable').datagrid('options').url = "/Home/GetList";
+        $('#gridColumnTable').datagrid('options').queryParams = queryParams;
+        $('#gridColumnTable').datagrid('reload');
+    }
     function resizelayout() {
         var tabHeight = $(window).height() - $("ul").height() - 50;
         $(".tab-content").css("height", tabHeight);
@@ -105,6 +144,7 @@
                 </div>
                 <div class="panel-body">
                     <div id="gridTable" class="easyui-datagrid" style="width:100%;"></div>
+                    <div id="gridColumnTable" class="easyui-datagrid" style="width:100%;"></div>
                     <div id="tb" style="padding:5px;height:auto">
                         <div>
                             表名<input id="txtSearch" class="easyui-searchbox" data-options="prompt:'Please Input TableName',searcher:doSearch" style="width:300px" />

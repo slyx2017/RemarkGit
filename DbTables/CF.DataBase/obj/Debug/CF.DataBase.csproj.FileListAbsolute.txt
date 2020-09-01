@@ -1,0 +1,13 @@
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Debug\CF.DataBase.dll
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Debug\CF.DataBase.pdb
+C:\Users\06374\source\repos\DbTables\CF.DataBase\obj\Debug\CF.DataBase.csprojAssemblyReference.cache
+C:\Users\06374\source\repos\DbTables\CF.DataBase\obj\Debug\CF.DataBase.csproj.CoreCompileInputs.cache
+C:\Users\06374\source\repos\DbTables\CF.DataBase\obj\Debug\CF.DataBase.dll
+C:\Users\06374\source\repos\DbTables\CF.DataBase\obj\Debug\CF.DataBase.pdb
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Debug\Dapper.dll
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Debug\Dapper.xml
+C:\Users\06374\source\repos\DbTables\CF.DataBase\obj\Debug\CF.DataBase.csproj.CopyComplete
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Debug\DapperExtensions.dll
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Debug\DapperExtensions.pdb
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Debug\CF.Entity.dll
+C:\Users\06374\source\repos\DbTables\CF.DataBase\bin\Debug\CF.Entity.pdb
