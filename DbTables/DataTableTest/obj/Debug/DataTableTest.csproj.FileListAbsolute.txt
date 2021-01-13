@@ -10,8 +10,8 @@ C:\Users\06374\source\repos\DbTables\DataTableTest\bin\Debug\Microsoft.VisualStu
 C:\Users\06374\source\repos\DbTables\DataTableTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
 C:\Users\06374\source\repos\DbTables\DataTableTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
 C:\Users\06374\source\repos\DbTables\DataTableTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
-C:\Users\06374\source\repos\DbTables\DataTableTest\obj\Debug\DataTableTest.csprojAssemblyReference.cache
 C:\Users\06374\source\repos\DbTables\DataTableTest\obj\Debug\DataTableTest.csproj.CoreCompileInputs.cache
 C:\Users\06374\source\repos\DbTables\DataTableTest\obj\Debug\DataTableTest.csproj.CopyComplete
 C:\Users\06374\source\repos\DbTables\DataTableTest\obj\Debug\DataTableTest.dll
 C:\Users\06374\source\repos\DbTables\DataTableTest\obj\Debug\DataTableTest.pdb
+C:\Users\06374\source\repos\DbTables\DataTableTest\obj\Debug\DataTableTest.csprojAssemblyReference.cache

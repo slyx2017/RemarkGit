@@ -198,10 +198,11 @@ namespace DbTables.Controllers
         /// 数据库表字段转JSON
         /// </summary>
         /// <param name="q"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        public ActionResult GetJsonData(string q)
+        public ActionResult GetJsonData(string q,string type)
         {
-            var jsondata = dbConnBiz.GetJsonData(q);
+            var jsondata = dbConnBiz.GetJsonData(q,type);
             return Content(jsondata);
         }
 

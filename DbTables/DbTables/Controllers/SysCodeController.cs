@@ -13,5 +13,9 @@ namespace DbTables.Controllers
         {
             return View();
         }
+        public ActionResult qrcode()
+        {
+            return View();
+        }
     }
 }

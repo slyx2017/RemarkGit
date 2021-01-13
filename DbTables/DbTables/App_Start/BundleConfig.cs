@@ -21,6 +21,10 @@ namespace DbTables
                 "~/Scripts/jquery.min.js", 
                 "~/Scripts/jquery.easyui.min.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/qrcode").Include(
+                "~/Scripts/jquery.min.js",
+                      "~/Scripts/qrcode.min.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css"));
 

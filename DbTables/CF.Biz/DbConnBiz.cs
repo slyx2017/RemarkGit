@@ -13,7 +13,7 @@ namespace CF.Biz
     public class DbConnBiz
     {
 
-        #region
+        #region 生成Form字符串
         /// <summary>
         /// 生成Form字符串
         /// </summary>
@@ -71,7 +71,7 @@ Left join sys.types d on d.user_type_id=b.user_type_id
             filecs += "<script>" + rn;
             filecs += "     var keyValue = request(\"keyValue\");" + rn;
             filecs += "     $(function () {" + rn;
-            filecs += "             LoadFormData();" + rn;
+            filecs += "         LoadFormData();" + rn;
             filecs += "     });" + rn;
             filecs += rn;
             filecs += "     //初始化表单" + rn;
@@ -95,23 +95,14 @@ Left join sys.types d on d.user_type_id=b.user_type_id
             filecs += "             return false;" + rn;
             filecs += "         }" + rn;
             filecs += "         var postData = $('#form1').GetWebControls_Ext('');" + rn;
-            filecs += "         $.ajax({" + rn;
-            filecs += "             type: 'post'," + rn;
+            filecs += "         $.SaveForm({" + rn;
             filecs += "             url: '/" + rootPath + "/" + q + "/SaveForm?keyValue='+keyValue," + rn;
-            filecs += "             data: postData," + rn;
-            filecs += "             success: function (json) {" + rn;
-            filecs += "                 if (json.type === 1) {" + rn;
-            filecs += "                     $.currentIframe().btn_search();" + rn;
-            filecs += "                     dialogClose();" + rn;
-            filecs += "                 }else{" + rn;
-            filecs += "                     dialogMsg(json.message, -1);" + rn;
-            filecs += "                 }" + rn;
-            filecs += "             }," + rn;
-            filecs += "             error: function (json) {" + rn;
-            filecs += "                 dialogMsg(json.message, -1);" + rn;
+            filecs += "             param: postData," + rn;
+            filecs += "             loading: '数据处理中...'," + rn;
+            filecs += "             success: function (data) {" + rn;
+            filecs += "                 $.currentIframe().btn_search();" + rn;
             filecs += "             }" + rn;
             filecs += "         });" + rn;
-            filecs += "         return true;" + rn;
             filecs += "     }" + rn;
             filecs += rn;
             filecs += "</script>" + rn;
@@ -252,10 +243,10 @@ Left join sys.types d on d.user_type_id=b.user_type_id
                         filecs += "                 { title: '" + (string.IsNullOrEmpty(item.description)?item.columnname:item.description) + "', field: '" + item.columnname + "', width: 120, align: 'left'," + rn;
                         filecs += "                     formatter: function (value, row){" + rn;
                         filecs += "                         if (value){" + rn;
-                        filecs += "                                 return '是'" + rn;
+                        filecs += "                                 return '是';" + rn;
                         filecs += "                         }" + rn;
                         filecs += "                         else{" + rn;
-                        filecs += "                                 return '否'" + rn;
+                        filecs += "                                 return '否';" + rn;
                         filecs += "                         }" + rn;
                         filecs += "                     }" + rn;
                         filecs += "                 }," + rn;
@@ -296,7 +287,7 @@ Left join sys.types d on d.user_type_id=b.user_type_id
 
             filecs += "     //查询" + rn;
             filecs += "     function btn_search() {" + rn;
-            filecs += "         var rows = $('#gridTable').datagrid('getRows');" + rn;
+            filecs += "         var rows = $('#gridTable').datagrid('getSelections');" + rn;
             filecs += "         if (rows != undefined && rows.length > 0) {" + rn;
             filecs += "             $('#gridTable').datagrid('clearSelections'); //必选先清除选择项 再重新加载数据" + rn;
             filecs += "         }" + rn;
@@ -314,8 +305,8 @@ Left join sys.types d on d.user_type_id=b.user_type_id
             filecs += "             id: 'Form'," + rn;
             filecs += "             title: '新增'," + rn;
             filecs += "             url: '/" + rootPath + "/" + q + "/Form'," + rn;
-            filecs += "             width: '500px'," + rn;
-            filecs += "             height: '360px'," + rn;
+            filecs += "             width: '600px'," + rn;
+            filecs += "             height: '460px'," + rn;
             filecs += "             callBack: function (iframeId) {" + rn;
             filecs += "                 top.frames[iframeId].AcceptClick();" + rn;
             filecs += "             }" + rn;
@@ -336,8 +327,8 @@ Left join sys.types d on d.user_type_id=b.user_type_id
             filecs += "                 id: 'Form'," + rn;
             filecs += "                 title: '编辑'," + rn;
             filecs += "                 url: '/" + rootPath + "/" + q + "/Form?keyValue=' + keyValue," + rn;
-            filecs += "                 width: '500px'," + rn;
-            filecs += "                 height: '360px'," + rn;
+            filecs += "                 width: '600px'," + rn;
+            filecs += "                 height: '460px'," + rn;
             filecs += "                 callBack: function (iframeId) {" + rn;
             filecs += "                     top.frames[iframeId].AcceptClick();" + rn;
             filecs += "                 }" + rn;
@@ -581,6 +572,7 @@ using System;";
 using MCP.ORM.Dapper.Core;
 using MCP.ORM.Dapper.Model;
 using MCP.Common.Utility;
+using MCP.Framework.Operator;
 using {0};
 using System;
 using System.Collections.Generic;
@@ -600,7 +592,7 @@ using System.Transactions;
             filecs += "     /// <summary>" + rn;
             filecs += "     /// " + desc + "业务类" + rn;
             filecs += "     /// </summary>" + rn;
-            filecs += "     public class " + q + "Biz : BaseService<" + entityName + ">" + rn;
+            filecs += "     public class " + q + "Biz: BaseService<" + entityName + ">" + rn;
             filecs += "     {" + rn;
 
 
@@ -614,17 +606,18 @@ using System.Transactions;
             bodystr += "            /// <param name=\"pageIndx\"></param>" + rn;
             bodystr += "            /// <param name=\"pagesize\"></param>" + rn;
             bodystr += "            /// <returns></returns>" + rn;
-            bodystr += "            public async Task<PagedCollection<" + entityName + ">> GetPagedCollection(" + rn;
+            bodystr += "            public dynamic GetPagedCollection(" + rn;
             bodystr += "                " + entityName + " queryModel," + rn;
             bodystr += "                List<SortDirection> sorts, int pageIndx, int pagesize)" + rn;
             bodystr += "            {" + rn;
-            bodystr += "                    string sqlquery = \" SELECT a.* FROM [dbo].[" + tableName + "] a WHERE a.IsActive = 1 \";" + rn;
+            bodystr += "                    StringBuilder sb = new StringBuilder();" + rn;
+            bodystr += "                    sb.Append(\"SELECT a.* FROM [dbo].[" + tableName + "] a WHERE a.IsActive = 1 \");" + rn;
             bodystr += "                    DynamicParameters parameters = new DynamicParameters();" + rn;
             bodystr += "                    //创建人" + rn;
             bodystr += "                    if (!string.IsNullOrEmpty(queryModel.CreaterName))" + rn;
             bodystr += "                    {" + rn;
-            bodystr += "                            sqlquery += \" and a.CreaterName = @CreaterName  \";" + rn;
-            bodystr += "                            parameters.Add(\"@CreaterName\", queryModel.CreaterName.Trim());" + rn;
+            bodystr += "                            sb.Append(\" and a.CreaterName = @CreaterName  \");" + rn;
+            bodystr += "                            parameters.Add(\"@CreaterName\", queryModel.CreaterName);" + rn;
             bodystr += "                    }" + rn;
             bodystr += rn;
 
@@ -632,17 +625,13 @@ using System.Transactions;
             bodystr += "                    {" + rn;
             bodystr += "                            sorts.Add(new SortDirection(\"CreateDT\", false));" + rn;
             bodystr += "                    }" + rn;
-            bodystr += "                    PagedCollection<" + entityName + "> newCollection = new PagedCollection<" + entityName + ">();" + rn;
-            bodystr += "                    var collection =" + rn;
-            bodystr += "                        await base.SqlQueryPageAsync<" + entityName + ">(sqlquery, parameters, sorts, pageIndx, pagesize);" + rn;
-            bodystr += "                    if (collection != null && collection.DataList.Any())" + rn;
+            bodystr += "                    var collection = base.SqlQueryPage<" + entityName + ">(sb.ToString(), parameters, sorts, pageIndx, pagesize);" + rn;
+            bodystr += "                    var data = new" + rn;
             bodystr += "                    {" + rn;
-            bodystr += "                            newCollection.DataList = collection.DataList;" + rn;
-            bodystr += "                            newCollection.TotalCount = collection.TotalCount;" + rn;
-            bodystr += "                            newCollection.PageIndex = collection.PageIndex;" + rn;
-            bodystr += "                            newCollection.PageSize = collection.PageSize;" + rn;
-            bodystr += "                    }" + rn;
-            bodystr += "                    return newCollection;" + rn;
+            bodystr += "                            total = collection.TotalCount," + rn;
+            bodystr += "                            rows = collection.DataList" + rn;
+            bodystr += "                    };" + rn;
+            bodystr += "                    return data;" + rn;
             bodystr += "            }" + rn;
 
             //根据主键获取实体对象
@@ -687,13 +676,18 @@ using System.Transactions;
             bodystr += "            /// <summary>" + rn;
             bodystr += "            /// 删除" + rn;
             bodystr += "            /// </summary>" + rn;
-            bodystr += "            /// <param name=\"entity\">实体对象</param>" + rn;
+            bodystr += "            /// <param name=\"keyValue\">主键</param>" + rn;
             bodystr += "            /// <returns></returns>" + rn;
-            bodystr += "            public bool Delete(" + entityName + " entity) " + rn;
+            bodystr += "            public bool Delete(string keyValue) " + rn;
             bodystr += "            {" + rn;
+            bodystr += "                    var userCurr = OperatorProvider.Provider.Current();" + rn;
+            bodystr += "                    var entity = GetFormEntity(keyValue);" + rn;
             bodystr += "                    if(entity != null)" + rn;
             bodystr += "                    {" + rn;
             bodystr += "                            entity.IsActive = false;" + rn;
+            bodystr += "                            entity.UpdateDT = DateTime.Now;" + rn;
+            bodystr += "                            entity.UpdaterID = userCurr.UserId;" + rn;
+            bodystr += "                            entity.UpdaterName = userCurr.UserName;" + rn;
             bodystr += "                    }" + rn;
             bodystr += "                    return base.Update<" + entityName + ">(entity, isEnabled: false);" + rn;
             bodystr += "            }" + rn;
@@ -820,20 +814,15 @@ using MCP.OA.Util;
             bodystr += "            /// <param name=\"pageInfo\">分页对象</param>" + rn;
             bodystr += "            /// <returns></returns>" + rn;
             bodystr += "            [HttpPost]" + rn;
-            bodystr += $"            public async Task<ActionResult> GetPageListJson({q}Entity queryModel, PageInfo pageInfo)" + rn;
+            bodystr += $"            public ActionResult GetPageListJson({q}Entity queryModel, PageInfo pageInfo)" + rn;
             bodystr += "            {" + rn;
             bodystr += "                    List<SortDirection> orderBy = new List<SortDirection>()" + rn;
             bodystr += "                    {" + rn;
             bodystr += "                            new SortDirection(pageInfo.Sort,pageInfo.Order.Equals(\"asc\",StringComparison.CurrentCultureIgnoreCase))" + rn;
             bodystr += "                    };" + rn;
             bodystr += rn;
-            bodystr += $"                    var collection = await {q.ToLower()}Biz.GetPagedCollection(queryModel, orderBy, pageInfo.Page, pageInfo.Rows);" + rn;
-            bodystr += $"                    var grid = new JQueryEsayUiGrid<{q}Entity>" + rn;
-            bodystr += "                    {" + rn;
-            bodystr += "                            total = collection.TotalCount," + rn;
-            bodystr += $"                           rows = collection.DataList ?? new List<{q}Entity>()" + rn;
-            bodystr += "                    };" + rn;
-            bodystr += "                    return ToJsonResult(grid);" + rn;
+            bodystr += $"                    var data = {q.ToLower()}Biz.GetPagedCollection(queryModel, orderBy, pageInfo.Page, pageInfo.Rows);" + rn;
+            bodystr += "                    return ToJsonResult(data);" + rn;
             bodystr += "            }" + rn;
             bodystr += rn;
 
@@ -886,9 +875,24 @@ using MCP.OA.Util;
             bodystr += $"                            {q}Entity entity= {q.ToLower()}Biz.GetFormEntity(keyValue);" + rn;
             foreach (var item in collection)
             {
-                if (item.columnname != collection.FirstOrDefault().columnname && item.columnname != "CreaterID" && item.columnname != "CreateDT" && item.columnname != "CreaterName")
+                if (item.columnname != collection.FirstOrDefault().columnname && item.columnname != "CreaterID" && item.columnname != "CreateDT" && item.columnname != "CreaterName" && item.columnname!="IsActive")
                 {
-                    bodystr += "                            entity." + item.columnname + " = model." + item.columnname + ";" + rn;
+                    if (item.columnname == "UpdaterID")
+                    {
+                        bodystr += "                            entity." + item.columnname + " = opUserInfo.UserId;" + rn;
+                    }
+                    else if (item.columnname == "UpdaterName")
+                    {
+                        bodystr += "                            entity." + item.columnname + " = opUserInfo.UserName;" + rn;
+                    }
+                    else if (item.columnname == "UpdateDT")
+                    {
+                        bodystr += "                            entity." + item.columnname + " = time;" + rn;
+                    }
+                    else
+                    {
+                        bodystr += "                            entity." + item.columnname + " = model." + item.columnname + ";" + rn;
+                    }
                 }
             }
             bodystr += $"                            bool flag = {q.ToLower()}Biz.Edit(entity);" + rn;
@@ -912,15 +916,7 @@ using MCP.OA.Util;
             bodystr += "            /// <returns></returns>" + rn;
             bodystr += "            public ActionResult RemoveForm(string keyValue)" + rn;
             bodystr += "            {" + rn;
-            bodystr += $"                    var entity = {q.ToLower()}Biz.GetByCondition<{q}Entity>(keyValue);" + rn;
-            bodystr += "                    var opUserInfo = OperatorProvider.Provider.Current();" + rn;
-            bodystr += "                    if (entity != null)" + rn;
-            bodystr += "                    {" + rn;
-            bodystr += "                            entity.UpdateDT = DateTime.Now;" + rn;
-            bodystr += "                            entity.UpdaterID = opUserInfo.UserId;" + rn;
-            bodystr += "                            entity.UpdaterName = opUserInfo.UserName;" + rn;
-            bodystr += "                    }" + rn;
-            bodystr += $"                    var flag = {q.ToLower()}Biz.Delete(entity);" + rn;
+            bodystr += $"                    var flag = {q.ToLower()}Biz.Delete(keyValue);" + rn;
             bodystr += "                    if (flag)" + rn;
             bodystr += "                    {" + rn;
             bodystr += "                            return Success(\"删除成功！\");" + rn;
@@ -1014,7 +1010,7 @@ using MCP.OA.Util;
         /// </summary>
         /// <param name="q"></param>
         /// <returns></returns>
-        public string GetJsonData(string q)
+        public string GetJsonData(string q,string type)
         {
             List<string> listcolumn = new List<string>();
 
@@ -1033,18 +1029,34 @@ Left join sys.types d on d.user_type_id=b.user_type_id
             }
 
             var collection = DapperHelper.Query<TableEntity>(sqlstr,null, GetBizConnectionString());
-            listcolumn = collection.Select(x => x.columnname).ToList();
-
             string jsondata = "{";
-            foreach (var item in listcolumn)
+            if (type=="en")
             {
-                jsondata += "\"" + item + "\":\"" + item + "\",";
+                //listcolumn = collection.Select(x => x.columnname).ToList();
+                foreach (var item in collection)
+                {
+                    jsondata += item.columnname + ":\'" + item.columnname + "\',";
 
+                }
+                if (jsondata.EndsWith(","))
+                {
+                    jsondata = jsondata.Substring(0, jsondata.Length - 1);
+                }
             }
-            if (jsondata.EndsWith(","))
+            else
             {
-                jsondata = jsondata.Substring(0, jsondata.Length - 1);
+                foreach (var item in collection)
+                {
+                    jsondata += item.columnname + ":\'" + item.description + "\',";
+
+                }
+                if (jsondata.EndsWith(","))
+                {
+                    jsondata = jsondata.Substring(0, jsondata.Length - 1);
+                }
+                //listcolumn = collection.Select(x => x.columnname).ToList();
             }
+            
             jsondata += "}";
             return jsondata;
         }
