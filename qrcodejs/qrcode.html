@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+	<head>
+		<title>二维码生成</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+		<link href="bootstrap.css" rel="stylesheet" />
+		<script type="text/javascript" src="jquery.min.js"></script>
+		<script type="text/javascript" src="qrcode.js"></script>
+		<script type="text/javascript" src="download.js"></script>
+	</head>
+	<body>
+		<form class="form-horizontal">
+			<div style="margin:15px auto 30px auto;padding:60px;">
+				<h1 style="text-align:center">二维码生成</h1>
+				<div id="content">
+					<div class="form-group">
+						<label for="text" class="col-sm-2 control-label">文本</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="text" value="https://www.mcpsystem.com/" placeholder="Input a text" />
+						</div>
+					</div>
+				</div>
+				<div id="vcard" style="display: none;">
+					<div class="form-group">
+						<label for="name" class="col-sm-2 control-label">姓名</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="name" data-label="FN:" placeholder="输入姓名" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="phone" class="col-sm-2 control-label">手机</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="phone" data-label="TEL;TYPE=home,voice;VALUE=uri:" placeholder="输入联系方式" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="EMAIL" class="col-sm-2 control-label">EMAIL</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="EMAIL" data-label="EMAIL:" placeholder="输入email" />
+						</div>
+					</div>
+				</div>
+				<div>
+					<div class="form-group">
+						<label for="type" class="col-sm-2 control-label">二维码类别</label>
+						<div class="col-sm-10">
+							<select id="type" class="form-control">
+								<option value="url">网址二维码</option>
+								<option value="text">普通文本二维码</option>
+								<option value="vcard">电子名片二维码</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="size" class="col-sm-2 control-label">大小</label>
+						<div class="col-sm-5">
+							<select id="size" class="form-control">
+								<option value="100">100</option>
+								<option value="200">200</option>
+								<option value="300">300</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="EMAIL" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							<a id="btok" class="btn btn-default" href="#" role="button">生成</a>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="qrcode" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							<div id="qrcode" style="width:100px; height:100px; margin-top:15px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				function makeCode() {
+					$("#qrcode").html("");
+					var type = $("#type").val();
+					var text = $("#text").val();
+					switch (type) {
+						case "text":
+							if (!text) {
+								alert('必须填写内容');
+								return;
+							}
+							break;
+						case "url":
+							if (text.indexOf('http') < 0) {
+								alert('网站网址需要以"http://"或者"https://"开头');
+								return;
+							}
+							break;
+						case "vcard":
+							var name = $("#name").val();
+							if (!name) {
+								alert('必须填写姓名');
+								return;
+							}
+							var phone = $("#phone").val();
+							if (!phone) {
+								alert('必须填写电话号码');
+								return;
+							}
+							text = "BEGIN:VCARD \n" +
+								"VERSION:4.0 \n" +
+								$("#name").attr("data-label") + name + "\n" //姓名
+								+
+								$("#phone").attr("data-label") + phone + "\n" //电话
+								+
+								$("#EMAIL").attr("data-label") + $("#EMAIL").val() + "\n" //邮箱
+								+
+								'END:VCARD';
+							//var name=$(".vcard input[name='tel']").val();
+							/*text="BEGIN:VCARD \n"
+							    +"VERSION:4.0 \n"
+							    +"FN:"+name+"\n"
+							    +"ORG:齐迪科技 \n"
+							    +"TITLE:销售 \n"
+							    +"PHOTO;MEDIATYPE=image/png:https://www.qvdv.com/public/images/logo.png \n"
+							    +"TEL;TYPE=work,voice;VALUE=uri:0755-33171729 \n"
+							    +'ADR;TYPE=WORK;PREF=1;LABEL="工作地址":;;详细地址 \n'
+							    +"TEL;TYPE=home,voice;VALUE=uri:0755-36913578 \n"
+							    +'ADR;TYPE=HOME;PREF=1;LABEL="":;;详细地址 \n'
+							    +"EMAIL:qvdv@qvdv.com \n"
+							    +'END:VCARD';*/
+							break;
+						default:
+							if (text.indexOf('http') < 0) {
+								alert('网站网址需要以"http://"或者"https://"开头');
+								return;
+							}
+							break;
+					}
+					var val = $("#size").val();
+					$("#qrcode").css({
+						"width": val,
+						"height": val
+					});
+					new QRCode("qrcode", {
+						width: parseInt(val),
+						height: parseInt(val),
+						text: text
+					});
+					$("#qrcode").attr("title", "二维码");
+					// var qrcode = new QRCode("text", {
+					// 	width: parseInt(val),
+					// 	height: parseInt(val)
+					// });
+					// qrcode.makeCode(elText.val());
+				}
+				$("#btok").on("click", function() {
+					makeCode();
+				});
+				$("#type").on("change", function(data) {
+					var options = $("#type option:selected");
+					var type = options.val();
+					if (type == "vcard") {
+						$("#vcard").css("display", "block");
+						$("#content").css("display", "none");
+					} else {
+						$("#vcard").css("display", "none");
+						$("#content").css("display", "block");
+					}
+
+				});
+				$("#qrcode").on("click",function(){
+					download($("#qrcode img").attr("src"), "qrcode", "");
+				});
+				
+			</script>
+		</form>
+	</body>
+</html>
